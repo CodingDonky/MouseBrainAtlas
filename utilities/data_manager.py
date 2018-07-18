@@ -1025,7 +1025,6 @@ class DataManager(object):
     def load_section_limits_v2(stack, anchor_fn=None, prep_id=2):
         """
         """
-        
         d = load_data(DataManager.get_section_limits_filename_v2(stack=stack, anchor_fn=anchor_fn, prep_id=prep_id))
         
         return np.r_[d['left_section_limit'], d['right_section_limit']]
@@ -5349,16 +5348,6 @@ def generate_metadata_cache():
                                                        metadata_cache['valid_sections'][stack]]
         except KeyError:
             print("KEY ERROR ADN 999111")
-        '''
-        try:
-            first_sec, last_sec = metadata_cache['section_limits'][stack]
-            metadata_cache['valid_sections'][stack] = [sec for sec in range(first_sec, last_sec+1) if not is_invalid(stack=stack, sec=sec)]
-            metadata_cache['valid_filenames'][stack] = [metadata_cache['sections_to_filenames'][stack][sec] for sec in
-                                                       metadata_cache['valid_sections'][stack]]
-        except:
-            pass
-        '''
-# TEST
 
         try:
             metadata_cache['valid_sections_all'][stack] = [sec for sec, fn in metadata_cache['sections_to_filenames'][stack].iteritems() if not is_invalid(fn=fn)]
