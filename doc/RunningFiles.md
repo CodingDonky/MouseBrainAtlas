@@ -12,6 +12,7 @@ Requires files from pre-preprocessing step including [name]_anchor.txt, [name]_s
 Neutrace data typically is stained with another indicator, data has multiple channels that are a part of the preprocessing stage.
 
 Run **preprocess_cshl_data_v2_neurotrace.ipynb**, it will complete every step of the preprocessing stage for neurotrace brains as outlined below:
+#### preprocess_cshl_data_v2_neurotrace.ipynb
 * Prepare data
   - set 'stack' equal to brain name, make sure raw files are on S3:///mousebrainatlas-rawdata/...
 * Download raw scanner files from S3 and Specify raw file locations
@@ -31,6 +32,7 @@ Run **preprocess_cshl_data_v2_neurotrace.ipynb**, it will complete every step of
   - output1: `~/CSHL_data_processed/MD###/MD###_thumbnail_Ntb/*_thumbnail_Ntb.tif`
   - output2: `~/CSHL_data_processed/MD###/MD###_thumbnail_NtbNormalized/*_thumbnail_NtbNormalized.tif`
 * Compute Transforms using thumbnail_NtbNormalized
+#### Align.py
   - Use Elastix to align, computing transforms between adjacent sections
     - Gives *pairwise* transforms
   - Next step is to Compose the pairwise transformations, requires anchor slide
@@ -47,8 +49,10 @@ Run **preprocess_cshl_data_v2_neurotrace.ipynb**, it will complete every step of
           - Name of the anchor slice. Every other slice will be rigidly transformed based on the anchor
         - output3: `~/CSHL_data_processed/MD###/MD###_transformTo_*.pkl`
           - Transformation matrices for every stack, stored as Python Dictionary
+#### Compose.py
       - Apply transformations
         - output: `~/CSHL_data_processed/MD###/MD###_prep1_thumbnail_normalized/`
+#### Warp.py
 * Generate Thumbnail mask
   - Requires GUI (Active Contour Algorithm), using this program, you draw rough outlines, which are then shrinked by an algorithm called "active contour" to tightly fit the tissue content. [SKIP FOR NOW]
     - output: `prep1_thumbnail_mask`
