@@ -31,8 +31,8 @@ Run **preprocess_cshl_data_v2_neurotrace.ipynb**, it will complete every step of
   - input:   ----`~/CSHL_data_processed/MD###/MD###_raw_Ntb/*_raw_Ntb.tif`
   - output1: `~/CSHL_data_processed/MD###/MD###_thumbnail_Ntb/*_thumbnail_Ntb.tif`
   - output2: `~/CSHL_data_processed/MD###/MD###_thumbnail_NtbNormalized/*_thumbnail_NtbNormalized.tif`
-* Compute Transforms using thumbnail_NtbNormalized
 #### Align.py
+* Compute Transforms using thumbnail_NtbNormalized
   - Use Elastix to align, computing transforms between adjacent sections
     - Gives *pairwise* transforms
   - Next step is to Compose the pairwise transformations, requires anchor slide
@@ -50,8 +50,8 @@ Run **preprocess_cshl_data_v2_neurotrace.ipynb**, it will complete every step of
         - output3: `~/CSHL_data_processed/MD###/MD###_transformTo_*.pkl`
           - Transformation matrices for every stack, stored as Python Dictionary
 #### Compose.py
-      - Apply transformations
-        - output: `~/CSHL_data_processed/MD###/MD###_prep1_thumbnail_normalized/`
+* Apply transformations
+  - output: `~/CSHL_data_processed/MD###/MD###_prep1_thumbnail_normalized/`
 #### Warp.py
 * Generate Thumbnail mask
   - Requires GUI (Active Contour Algorithm), using this program, you draw rough outlines, which are then shrinked by an algorithm called "active contour" to tightly fit the tissue content. [SKIP FOR NOW]
