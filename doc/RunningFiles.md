@@ -37,8 +37,21 @@ Run **preprocess_cshl_data_v2_neurotrace.ipynb**, it will complete every step of
     - Then for each section (=slide), multiply all the pairwise transforms between this section and the anchor section. This gives each section a X-to-anchor transform. The X-to-anchor transforms for all sections are stored in a pkl file.
       - Yuncong: "This is the basics, though partially innacurate"
     - REAL STEPS
+      - Run Elastix code, pairwise transforms should work ~97% of the time. 
+        - output: `~/CSHL_data_processed/MD###/MD###_elastix_output/`
+      - Correct the failed 3% with a GUI and select an anchor slide
+        - Gui script: `gui/preprocess_tool_v3.py`
+        - output1: `~/CSHL_data_processed/MD###/MD###_custom_transform/`
+          - Corrected pairwise transforms done by hand
+        - output2: `~/CSHL_data_processed/MD###/MD###_anchor.txt`
+          - Name of the anchor slice. Every other slice will be rigidly transformed based on the anchor
+        - output3: `~/CSHL_data_processed/MD###/MD###_transformTo_*.pkl`
+          - Transformation matrices for every stack, stored as Python Dictionary
+      - Apply transformations
+        - output: `~/CSHL_data_processed/MD###/MD###_prep1_thumbnail_normalized/`
 * Generate Thumbnail mask
-  - Requires GUI, using this program, you draw rough outlines, which are then shrinked by an algorithm called "active contour" to tightly fit the tissue content. [SKIP FOR NOW]
+  - Requires GUI (Active Contour Algorithm), using this program, you draw rough outlines, which are then shrinked by an algorithm called "active contour" to tightly fit the tissue content. [SKIP FOR NOW]
+    - output: `prep1_thumbnail_mask`
 
 
 
