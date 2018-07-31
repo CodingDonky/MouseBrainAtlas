@@ -45,17 +45,20 @@ def download_from_s3(fp, local_root=None, is_dir=False, redownload=False, includ
         fp (str): file path
         local_root (str): default to ROOT_DIR
     """
+    
+  #  print 'ROOT dir of download location: '+local_root
 
     # Not using keyword default value because ROOT_DIR might be dynamically assigned rather than set at module importing.
-    if local_root is None:
-        if '/media/yuncong/YuncongPublic' in fp:
-            local_root = '/media/yuncong/YuncongPublic'
-        # elif '/media/yuncong/BstemAtlasData' in fp:
-        elif fp.startswith('/data'):
-            # local_root = '/media/yuncong/BstemAtlasData'
-            local_root = '/data'
-        else:
-            local_root = ROOT_DIR
+  #  if local_root is None:
+  #      print 'local_root is None'
+  #      if '/media/yuncong/YuncongPublic' in fp:
+  #          local_root = '/media/yuncong/YuncongPublic'
+  #      # elif '/media/yuncong/BstemAtlasData' in fp:
+  #      elif fp.startswith('/data'):
+  #          # local_root = '/media/yuncong/BstemAtlasData'
+  #          local_root = '/data'
+  #      else:
+  #          local_root = ROOT_DIR
 
     if redownload or not os.path.exists(fp):
         # TODO: even if the file exists, it might be incomplete. A more reliable way is to check if the sizes of two files match.
@@ -65,6 +68,7 @@ def download_from_s3(fp, local_root=None, is_dir=False, redownload=False, includ
                             is_dir=is_dir,
                             to_root=local_root,
                             include_only=include_only)
+        #print 'Success?'
 
 
 def relative_to_local(abs_fp, local_root=None):
@@ -89,6 +93,7 @@ def transfer_data(from_fp, to_fp, from_hostname, to_hostname, is_dir, include_on
     if from_hostname in ['localhost', 'ec2', 'workstation', 'ec2scratch']:
         # upload
         if to_hostname in ['s3', 's3raw']:
+
             if is_dir:
                 if includes is not None:
                     execute_command('aws s3 cp --recursive \"%(from_fp)s\" \"s3://%(to_fp)s\" --exclude \"*\" %(includes_str)s' % dict(from_fp=from_fp, to_fp=to_fp, includes_str=" ".join(['--include ' + incl for incl in includes])))
@@ -108,7 +113,7 @@ def transfer_data(from_fp, to_fp, from_hostname, to_hostname, is_dir, include_on
     elif to_hostname in ['localhost', 'ec2', 'workstation', 'ec2scratch']:
         # download
         if from_hostname in ['s3', 's3raw']:
-
+            
             # Clear existing folder/file
             if not include_only and not includes and not exclude_only:
                 execute_command('rm -rf \"%(to_fp)s\" && mkdir -p \"%(to_parent)s\"' % dict(to_parent=to_parent, to_fp=to_fp))
@@ -133,13 +138,19 @@ def transfer_data(from_fp, to_fp, from_hostname, to_hostname, is_dir, include_on
                         dict(from_fp=from_fp, to_fp=to_fp, from_hostname=from_hostname, to_hostname=to_hostname, to_parent=to_parent))
 
 def transfer_data_synced(fp_relative, from_hostname, to_hostname, is_dir, from_root=None, to_root=None, include_only=None, exclude_only=None, includes=None, s3_bucket=None):
+    #print 'from_root: '+str(from_root)
+    #print 'to_root: '+str(to_root)
     if from_root is None:
         from_root = default_root[from_hostname]
+        #print 'new from_root: '+str(from_root)
     if to_root is None:
         to_root = default_root[to_hostname]
+        #print 'new to_root: '+str(to_root)
 
     from_fp = os.path.join(from_root, fp_relative)
     to_fp = os.path.join(to_root, fp_relative)
+    #print 'from: '+from_fp
+    #print 'to  : '+to_fp
     transfer_data(from_fp=from_fp, to_fp=to_fp, from_hostname=from_hostname, to_hostname=to_hostname, is_dir=is_dir, include_only=include_only, exclude_only=exclude_only, includes=includes)
 
 
@@ -261,7 +272,7 @@ def run_distributed5(command, argument_type='single', kwargs_list=None, jobs_per
 
     if local_only:
         sys.stderr.write("Run locally.\n")
-
+        
         n_hosts = 1
 
     else:
@@ -290,7 +301,9 @@ def run_distributed5(command, argument_type='single', kwargs_list=None, jobs_per
         kwargs_list_as_dict = dict(zip(keys, zip(*vals)))
 
     assert argument_type in ['single', 'list', 'list2'], 'argument_type must be one of single, list, list2.'
-
+    print 'argument type: '+argument_type
+    
+    
     for node_i, (fi, li) in enumerate(first_last_tuples_distribute_over(0, len(kwargs_list_as_list)-1, n_hosts)):
 
         temp_script = '/tmp/runall.sh'
@@ -302,7 +315,7 @@ def run_distributed5(command, argument_type='single', kwargs_list=None, jobs_per
             elif argument_type == 'list2':
                 line = command % {key: json.dumps(vals[fj:lj+1]) for key, vals in kwargs_list_as_dict.iteritems()}
             elif argument_type == 'single':
-                # It is important to wrap command_templates and kwargs_list_str in apostrphes.
+                # It is important to wrap command_templates and kwargs_list_str in apostrophes.
                 # That lets bash treat them as single strings.
                 # Reference: http://stackoverflow.com/questions/15783701/which-characters-need-to-be-escaped-in-bash-how-do-we-know-it
                 line = "%(generic_launcher_path)s %(command_template)s %(kwargs_list_str)s" % \
@@ -310,6 +323,8 @@ def run_distributed5(command, argument_type='single', kwargs_list=None, jobs_per
                 'command_template': shell_escape(command),
                 'kwargs_list_str': shell_escape(json.dumps(kwargs_list_as_list[fj:lj+1]))
                 }
+                #print 'line: '+line
+                #print sys.getsizeof(line)
 
             temp_f.write(line + ' &\n')
 
@@ -334,6 +349,7 @@ def run_distributed5(command, argument_type='single', kwargs_list=None, jobs_per
             stdout_f = open(stdout_template % node_i, "w")
             stderr_f = open(stderr_template % node_i, "w")
             call(temp_script, shell=True, stdout=stdout_f, stderr=stderr_f)
+            print 'running script: '+temp_script
         else:
             call('qsub -V -q all.q@%(node)s -o %(stdout_log)s -e %(stderr_log)s %(script)s' % \
              dict(node=node_list[node_i], script=temp_script,

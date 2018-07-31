@@ -13,7 +13,8 @@ import pandas
 from ui.ui_PreprocessGui_v2 import Ui_PreprocessGui
 from ui.ui_AlignmentGui import Ui_AlignmentGui
 
-from widgets.ZoomableBrowsableGraphicsScene import ZoomableBrowsableGraphicsScene, SimpleGraphicsScene2, SimpleGraphicsScene3, SimpleGraphicsScene4
+from widgets.ZoomableBrowsableGraphicsScene import ZoomableBrowsableGraphicsScene, SimpleGraphicsScene2, \
+SimpleGraphicsScene3, SimpleGraphicsScene4
 from widgets.ZoomableBrowsableGraphicsSceneWithReadonlyPolygon import ZoomableBrowsableGraphicsSceneWithReadonlyPolygon
 from widgets.MultiplePixmapsGraphicsScene import MultiplePixmapsGraphicsScene
 from widgets.DrawableZoomableBrowsableGraphicsScene import DrawableZoomableBrowsableGraphicsScene
@@ -178,7 +179,8 @@ class PreprocessGUI(QMainWindow, Ui_PreprocessGui):
 
         filename_to_section = invert_section_to_filename_mapping(self.section_to_filename)
         with open(cropbox_fp, 'w') as f:
-            f.write('%d %d %d %d %d %d' % (ul_x, lr_x, ul_y, lr_y, filename_to_section[self.first_section], filename_to_section[self.last_section]))
+            f.write('%d %d %d %d %d %d' % (ul_x, lr_x, ul_y, lr_y, filename_to_section[self.first_section], \
+            filename_to_section[self.last_section]))
 
         upload_to_s3(cropbox_fp)
 
@@ -247,7 +249,8 @@ class PreprocessGUI(QMainWindow, Ui_PreprocessGui):
         self.prev_gscene.active_image_updated.connect(self.previous_section_image_changed)
         self.prev_gscene.anchor_point_added.connect(self.anchor_point_added)
 
-        self.overlay_gscene = MultiplePixmapsGraphicsScene(id='overlay', pixmap_labels=['moving', 'fixed'], gview=self.alignment_ui.aligned_gview)
+        self.overlay_gscene = MultiplePixmapsGraphicsScene(id='overlay', pixmap_labels=['moving', 'fixed'], \
+        gview=self.alignment_ui.aligned_gview)
         self.alignment_ui.aligned_gview.setScene(self.overlay_gscene)
         self.transformed_images_feeder = ImageDataFeeder_v2('overlay image feeder', stack=self.stack,
                                                 sections=section_filenames, resolution=self.tb_res)
@@ -266,10 +269,12 @@ class PreprocessGUI(QMainWindow, Ui_PreprocessGui):
 
         transformed_image_filenames = []
         for i in xrange(1, len(section_filenames)):
-            fp = DataManager.load_image_filepath_warped_to_adjacent_section(stack=self.stack, moving_fn=section_filenames[i], fixed_fn=section_filenames[i-1])
+            fp = DataManager.load_image_filepath_warped_to_adjacent_section(stack=self.stack, \
+            moving_fn=section_filenames[i], fixed_fn=section_filenames[i-1])
             transformed_image_filenames.append(fp)
 
-        self.transformed_images_feeder.set_images(labels=section_filenames[1:], filenames=transformed_image_filenames, resolution=self.tb_res, load_with_cv2=True)
+        self.transformed_images_feeder.set_images(labels=section_filenames[1:], \
+        filenames=transformed_image_filenames, resolution=self.tb_res, load_with_cv2=True)
 
     def align_using_elastix(self):
         selected_elastix_parameter_name = str(self.alignment_ui.comboBox_parameters.currentText())
@@ -279,13 +284,16 @@ class PreprocessGUI(QMainWindow, Ui_PreprocessGui):
         prev_fn = self.prev_gscene.active_section
         out_dir = os.path.join(self.stack_data_dir, self.stack + '_custom_transforms', curr_fn + '_to_' + prev_fn)
 
-        curr_fp = DataManager.get_image_filepath_v2(stack=self.stack, prep_id=None, fn=curr_fn, resol=self.tb_res, version=self.tb_version)
-        prev_fp = DataManager.get_image_filepath_v2(stack=self.stack, prep_id=None, fn=prev_fn, resol=self.tb_res, version=self.tb_version )
+        curr_fp = DataManager.get_image_filepath_v2(stack=self.stack, prep_id=None, fn=curr_fn, \
+        resol=self.tb_res, version=self.tb_version)
+        prev_fp = DataManager.get_image_filepath_v2(stack=self.stack, prep_id=None, fn=prev_fn, \
+        resol=self.tb_res, version=self.tb_version )
 
         # curr_fp = os.path.join(RAW_DATA_DIR, self.stack, curr_fn + '.' + self.tb_fmt)
         # prev_fp = os.path.join(RAW_DATA_DIR, self.stack, prev_fn + '.' + self.tb_fmt)
 
-        execute_command('rm -rf %(out_dir)s; mkdir -p %(out_dir)s; elastix -f %(fixed_fn)s -m %(moving_fn)s -out %(out_dir)s -p %(param_fn)s' % \
+        execute_command('rm -rf %(out_dir)s; mkdir -p %(out_dir)s; elastix -f %(fixed_fn)s -m %(moving_fn)s -out \
+        %(out_dir)s -p %(param_fn)s' % \
         dict(param_fn=param_fn, out_dir=out_dir, fixed_fn=prev_fp, moving_fn=curr_fp))
         # section_filenames = self.get_sorted_filenames(valid_only=self.show_valid_only)
 
@@ -343,7 +351,8 @@ class PreprocessGUI(QMainWindow, Ui_PreprocessGui):
         curr_section_fn = self.curr_gscene.active_section
         prev_section_fn = self.prev_gscene.active_section
 
-        custom_tf_dir = os.path.join(self.stack_data_dir, self.stack + '_custom_transforms', curr_section_fn + '_to_' + prev_section_fn)
+        custom_tf_dir = os.path.join(self.stack_data_dir, self.stack + '_custom_transforms', \
+        curr_section_fn + '_to_' + prev_section_fn)
 
         execute_command("rm -rf %(out_dir)s; mkdir -p %(out_dir)s" % dict(out_dir=custom_tf_dir))
         custom_tf_fp = os.path.join(custom_tf_dir, '%(curr_fn)s_to_%(prev_fn)s_customTransform.txt' % \
@@ -364,20 +373,25 @@ class PreprocessGUI(QMainWindow, Ui_PreprocessGui):
         curr_section_fn = self.curr_gscene.active_section
         prev_section_fn = self.prev_gscene.active_section
 
-        custom_tf_fn = os.path.join(self.stack_data_dir, self.stack+'_custom_transforms', curr_section_fn + '_to_' + prev_section_fn, curr_section_fn + '_to_' + prev_section_fn + '_customTransform.txt')
+        custom_tf_fn = os.path.join(self.stack_data_dir, self.stack+'_custom_transforms', curr_section_fn + '_to_' + \
+        prev_section_fn, curr_section_fn + '_to_' + prev_section_fn + '_customTransform.txt')
         with open(custom_tf_fn, 'r') as f:
             t11, t12, t13, t21, t22, t23 = map(float, f.readline().split())
 
-        prev_fp = DataManager.get_image_filepath_v2(stack=self.stack, prep_id=None, fn=prev_section_fn, resol=self.tb_res, version=self.tb_version )
-        curr_fp = DataManager.get_image_filepath_v2(stack=self.stack, prep_id=None, fn=curr_section_fn, resol=self.tb_res, version=self.tb_version )
+        prev_fp = DataManager.get_image_filepath_v2(stack=self.stack, prep_id=None, fn=prev_section_fn, \
+        resol=self.tb_res, version=self.tb_version )
+        curr_fp = DataManager.get_image_filepath_v2(stack=self.stack, prep_id=None, fn=curr_section_fn, \
+        resol=self.tb_res, version=self.tb_version )
         prev_img_w, prev_img_h = identify_shape(prev_fp)
 
-        output_image_fp = os.path.join(self.stack_data_dir, '%(stack)s_custom_transforms/%(curr_fn)s_to_%(prev_fn)s/%(curr_fn)s_alignedTo_%(prev_fn)s.tif' % \
+        output_image_fp = os.path.join(self.stack_data_dir, '%(stack)s_custom_transforms/%(curr_fn)s_to_\
+        %(prev_fn)s/%(curr_fn)s_alignedTo_%(prev_fn)s.tif' % \
                         dict(stack=self.stack,
                         curr_fn=curr_section_fn,
                         prev_fn=prev_section_fn) )
 
-        execute_command("convert %(curr_fp)s -virtual-pixel background +distort AffineProjection '%(sx)f,%(rx)f,%(ry)f,%(sy)f,%(tx)f,%(ty)f' -crop %(w)sx%(h)s%(x)s%(y)s\! -flatten -compress lzw %(output_fp)s" %\
+        execute_command("convert %(curr_fp)s -virtual-pixel background +distort AffineProjection '\
+        %(sx)f,%(rx)f,%(ry)f,%(sy)f,%(tx)f,%(ty)f' -crop %(w)sx%(h)s%(x)s%(y)s\! -flatten -compress lzw %(output_fp)s" %\
         dict(curr_fp=curr_fp,
             output_fp=output_image_fp,
             tb_fmt=self.tb_fmt,
@@ -441,9 +455,11 @@ class PreprocessGUI(QMainWindow, Ui_PreprocessGui):
 
         # Dump preprocessing info
         placeholder_indices = [idx+1 for idx, fn in enumerate(self.sorted_filenames) if fn == 'Placeholder']
-        placeholder_slide_positions = [(slide_name, pos) for slide_name, x in self.slide_position_to_fn.iteritems() for pos, fn in x.iteritems() if fn == 'Placeholder']
+        placeholder_slide_positions = [(slide_name, pos) for slide_name, x in self.slide_position_to_fn.iteritems() \
+        for pos, fn in x.iteritems() if fn == 'Placeholder']
         rescan_indices = [idx+1 for idx, fn in enumerate(self.sorted_filenames) if fn == 'Rescan']
-        rescan_slide_positions = [(slide_name, pos) for slide_name, x in self.slide_position_to_fn.iteritems() for pos, fn in x.iteritems() if fn == 'Rescan']
+        rescan_slide_positions = [(slide_name, pos) for slide_name, x in self.slide_position_to_fn.iteritems() \
+        for pos, fn in x.iteritems() if fn == 'Rescan']
 
         ul_pos = self.sorted_sections_gscene.corners['ul'].scenePos()
         lr_pos = self.sorted_sections_gscene.corners['lr'].scenePos()
@@ -467,9 +483,12 @@ class PreprocessGUI(QMainWindow, Ui_PreprocessGui):
 
         from datetime import datetime
         timestamp = datetime.now().strftime("%m%d%Y%H%M%S")
-        pickle.dump(info, open(self.stack_data_dir + '/%(stack)s_preprocessInfo_%(timestamp)s.pkl' % {'stack': self.stack, 'timestamp':timestamp}, 'w'))
+        pickle.dump(info, open(self.stack_data_dir + '/%(stack)s_preprocessInfo_%(timestamp)s.pkl' % \
+        {'stack': self.stack, 'timestamp':timestamp}, 'w'))
 
-        execute_command('cd %(stack_data_dir)s && rm -f %(stack)s_preprocessInfo.pkl && ln -s %(stack)s_preprocessInfo_%(timestamp)s.pkl %(stack)s_preprocessInfo.pkl' % {'stack': self.stack, 'timestamp':timestamp, 'stack_data_dir':self.stack_data_dir})
+        execute_command('cd %(stack_data_dir)s && rm -f %(stack)s_preprocessInfo.pkl && ln -s \
+        %(stack)s_preprocessInfo_%(timestamp)s.pkl %(stack)s_preprocessInfo.pkl' % {'stack': self.stack, \
+        'timestamp':timestamp, 'stack_data_dir':self.stack_data_dir})
 
         self.save_crop()
         self.save_sorted_filenames()
@@ -492,7 +511,8 @@ class PreprocessGUI(QMainWindow, Ui_PreprocessGui):
             else:
                 filenames_to_load = self.get_sorted_filenames(valid_only=self.show_valid_only)
                 shapes = \
-                    [identify_shape(DataManager.get_image_filepath_v2(stack=self.stack, fn=fn, prep_id=None, version=self.tb_version, resol=self.tb_res))
+                    [identify_shape(DataManager.get_image_filepath_v2(stack=self.stack, fn=fn, prep_id=None, \
+                    version=self.tb_version, resol=self.tb_res))
                     for fn in filenames_to_load]
                 largest_idx = np.argmax([h*w for h, w in shapes])
                 print 'largest section is ', filenames_to_load[largest_idx]
@@ -508,7 +528,8 @@ class PreprocessGUI(QMainWindow, Ui_PreprocessGui):
                 self.ordered_images_feeder = ImageDataFeeder_v2('ordered image feeder', stack=self.stack,
                                     sections=filenames_to_load, resolution=self.tb_res, use_thread=False, auto_load=False)
                 self.ordered_images_feeder.set_images(labels=filenames_to_load,
-                                                filenames=[DataManager.get_image_filepath_v2(stack=self.stack, fn=fn, prep_id=None, version=self.tb_version, resol=self.tb_res)
+                                                filenames=[DataManager.get_image_filepath_v2(stack=self.stack, fn=fn, \
+                                                                            prep_id=None, version=self.tb_version, resol=self.tb_res)
                                                                             for fn in filenames_to_load],
                                                 resolution=self.tb_res, load_with_cv2=False)
                 self.ordered_images_feeder.set_images(labels=['Placeholder'],
@@ -534,7 +555,8 @@ class PreprocessGUI(QMainWindow, Ui_PreprocessGui):
                 self.aligned_images_feeder = ImageDataFeeder_v2('aligned image feeder', stack=self.stack,
                                     sections=filenames_to_load, resolution=self.tb_res, use_thread=False, auto_load=False)
                 self.aligned_images_feeder.set_images(labels=filenames_to_load,
-                                                filenames=[DataManager.get_image_filepath_v2(stack=self.stack, fn=fn, prep_id=1, version=self.tb_version, resol=self.tb_res)
+                                                filenames=[DataManager.get_image_filepath_v2(stack=self.stack, fn=fn, \
+                                                                            prep_id=1, version=self.tb_version, resol=self.tb_res)
                                                                             for fn in filenames_to_load],
                                                 resolution=self.tb_res, load_with_cv2=False)
 
@@ -560,7 +582,8 @@ class PreprocessGUI(QMainWindow, Ui_PreprocessGui):
         #     maskContourViz_image_filenames = [os.path.join(self.maskContourViz_images_dir, '%(fn)s_mask_contour_viz.tif' % {'fn': fn})
         #                                 for fn in self.valid_section_filenames]
         #
-        #     self.maskContourViz_images_feeder.set_images(self.valid_section_indices, maskContourViz_image_filenames, resolution=self.tb_res, load_with_cv2=False)
+        #     self.maskContourViz_images_feeder.set_images(self.valid_section_indices, maskContourViz_image_filenames, \
+        # resolution=self.tb_res, load_with_cv2=False)
         #     # self.maskContourViz_images_feeder.set_resolution(self.tb_res)
         #
         #     active_i = self.sorted_sections_gscene.active_i
@@ -591,7 +614,8 @@ class PreprocessGUI(QMainWindow, Ui_PreprocessGui):
         sys.stderr.write('Sorted filename list is loaded.\n')
         self.statusBar().showMessage('Sorted filename list is loaded.')
 
-        # self.fn_to_slide_position = {fn: (slide, pos) for slide, pos_to_fn in self.slide_position_to_fn.iteritems() for pos, fn in pos_to_fn.iteritems()}
+        # self.fn_to_slide_position = {fn: (slide, pos) for slide, pos_to_fn in self.slide_position_to_fn.iteritems()\
+        # for pos, fn in pos_to_fn.iteritems()}
         # self.sorted_slide_positions = [self.fn_to_slide_position[fn] for fn in self.sorted_filenames]
 
         self.update_sorted_sections_gscene_from_sorted_filenames()
@@ -607,7 +631,8 @@ class PreprocessGUI(QMainWindow, Ui_PreprocessGui):
             self.statusBar().showMessage('Cannot load slide position to image filename mapping - File does not exists.')
 
     def save(self):
-        pickle.dump(self.slide_position_to_fn, open(self.stack_data_dir + '/%(stack)s_slide_position_to_fn.pkl' % {'stack': self.stack}, 'w') )
+        pickle.dump(self.slide_position_to_fn, open(self.stack_data_dir + '/%(stack)s_slide_position_to_fn.pkl' % \
+        {'stack': self.stack}, 'w') )
 
     def get_sorted_filenames(self, valid_only=False):
         return [fn for sec, fn in sorted(self.section_to_filename.items())

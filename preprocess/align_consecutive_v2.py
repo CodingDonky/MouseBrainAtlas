@@ -18,7 +18,9 @@ parser = argparse.ArgumentParser(
 parser.add_argument("stack", type=str, help="stack name")
 parser.add_argument("input_dir", type=str, help="input dir")
 parser.add_argument("output_dir", type=str, help="output dir")
-parser.add_argument("kwargs_str", type=str, help="json-encoded list of dict (keyworded inputs). Each dict entry should have prev_fn and curr_fn. It can optionally have prev_sn and curr_sn if file names are different from section names.")
+parser.add_argument("kwargs_str", type=str, help="json-encoded list of dict \
+(keyworded inputs). Each dict entry should have prev_fn and curr_fn. It can \
+optionally have prev_sn and curr_sn if file names are different from section names.")
 parser.add_argument("fmt", type=str, help="file format, e.g. tif")
 parser.add_argument("-p", "--param_fp", type=str, help="elastix parameter file path", default=None)
 parser.add_argument("-r", help="re-generate even if already exists", action='store_true')
@@ -40,13 +42,13 @@ if param_fp is None:
         param_fp = os.path.join(parameter_dir, "Parameters_Rigid_MutualInfo.txt")
     else:
         param_fp = os.path.join(parameter_dir, "Parameters_Rigid.txt")
-        
+
 failed_pairs = []
 
 for kwarg in kwargs_str:
     prev_fn = kwarg['prev_fn']
     curr_fn = kwarg['curr_fn']
-    
+
     if 'prev_sn' in kwarg and 'curr_sn' in kwarg:
         prev_sn = kwarg['prev_sn']
         curr_sn = kwarg['curr_sn']
@@ -63,7 +65,8 @@ for kwarg in kwargs_str:
     execute_command('rm -rf \"%s\"' % output_subdir)
     create_if_not_exists(output_subdir)
 
-    ret = execute_command('%(elastix_bin)s -f \"%(fixed_fn)s\" -m \"%(moving_fn)s\" -out \"%(output_subdir)s\" -p \"%(param_fp)s\"' % \
+    ret = execute_command('%(elastix_bin)s -f \"%(fixed_fn)s\" -m \"%(moving_fn)s\" -out \
+    \"%(output_subdir)s\" -p \"%(param_fp)s\"' % \
             {'elastix_bin': ELASTIX_BIN,
             'param_fp': param_fp,
             'output_subdir': output_subdir,
@@ -89,4 +92,3 @@ if len(failed_pairs) > 0:
     with open(os.path.join(output_dir, '%s_failed_pairs_%s.txt' % (stack, hostname.split('.')[0])), 'w') as f:
         for pf, cf in failed_pairs:
             f.write(pf + ' ' + cf + '\n')
-            
