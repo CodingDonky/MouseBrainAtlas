@@ -266,7 +266,8 @@ def run_distributed5(command, argument_type='single', kwargs_list=None, jobs_per
     """
 
     if use_aws:
-        execute_command('rm -f /home/ubuntu/stderr_*; rm -f /home/ubuntu/stdout_*')
+        #execute_command('rm -f /home/ubuntu/stderr_*; rm -f /home/ubuntu/stdout_*')
+        execute_command('rm -f ~/stderr_*; rm -f ~/stdout_*')
     else:
         execute_command('rm -f ~/stderr_*; rm -f ~/stdout_*')
 
@@ -337,8 +338,10 @@ def run_distributed5(command, argument_type='single', kwargs_list=None, jobs_per
         # One can then assign downstream programs to specific nodes so they can read corresponding files from local scratch.
         
         if use_aws:
-            stdout_template = '/home/ubuntu/stdout_%d.log'
-            stderr_template = '/home/ubuntu/stderr_%d.log'
+            stdout_template = '/home/alexn/stdout_%d.log'
+            stderr_template = '/home/alexn/stderr_%d.log'
+            #stdout_template = '/home/ubuntu/stdout_%d.log'
+            #stderr_template = '/home/ubuntu/stderr_%d.log'
         else:
             stdout_template = '/home/alexn/stdout_%d.log'
             stderr_template = '/home/alexn/stderr_%d.log'
