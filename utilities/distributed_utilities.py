@@ -265,6 +265,7 @@ def run_distributed5(command, argument_type='single', kwargs_list=None, jobs_per
         argument_type: one of list, list2, single. If command takes one input item as argument, use "single". If command takes a list of input items as argument, use "list2". If command takes an argument called "kwargs_str", use "list".
     """
 
+    # Remove stderr and stdout files no matter what.
     if use_aws:
         #execute_command('rm -f /home/ubuntu/stderr_*; rm -f /home/ubuntu/stdout_*')
         execute_command('rm -f ~/stderr_*; rm -f ~/stdout_*')
@@ -273,11 +274,8 @@ def run_distributed5(command, argument_type='single', kwargs_list=None, jobs_per
 
     if local_only:
         sys.stderr.write("Run locally.\n")
-        
         n_hosts = 1
-
     else:
-
         # Use a fixed node list rather than letting SGE automatically determine the node list.
         # This allows for control over which input items go to which node.
         if node_list is None:
@@ -291,6 +289,7 @@ def run_distributed5(command, argument_type='single', kwargs_list=None, jobs_per
     if kwargs_list is None:
         kwargs_list = {'dummy': [None]*n_hosts}
 
+    # kwargs list is converted to a dictionary
     if isinstance(kwargs_list, dict):
         keys, vals = zip(*kwargs_list.items())
         kwargs_list_as_list = [dict(zip(keys, t)) for t in zip(*vals)]
@@ -306,11 +305,21 @@ def run_distributed5(command, argument_type='single', kwargs_list=None, jobs_per
     
     
     for node_i, (fi, li) in enumerate(first_last_tuples_distribute_over(0, len(kwargs_list_as_list)-1, n_hosts)):
-
+        #print 'fi: ',fi # First index
+        #print 'li: ',li # Last index
+        #print 'node_i: ',node_i # Node index
+        #print 'enumerate over ',first_last_tuples_distribute_over(0, len(kwargs_list_as_list)-1, n_hosts)
+        
         temp_script = '/tmp/runall.sh'
         temp_f = open(temp_script, 'w')
 
         for j, (fj, lj) in enumerate(first_last_tuples_distribute_over(fi, li, jobs_per_node)):
+            print 'fj: ',fj # First index 2
+            print 'lj: ',lj # Last index 2
+            print 'index j: ',j # J index
+        
+            # json.dumps(obj) converts an object into a string
+            
             if argument_type == 'list':
                 line = command % {'kwargs_str': json.dumps(kwargs_list_as_list[fj:lj+1])}
             elif argument_type == 'list2':
@@ -324,8 +333,8 @@ def run_distributed5(command, argument_type='single', kwargs_list=None, jobs_per
                 'command_template': shell_escape(command),
                 'kwargs_list_str': shell_escape(json.dumps(kwargs_list_as_list[fj:lj+1]))
                 }
-                #print 'line: '+line
-                #print sys.getsizeof(line)
+            print 'line: '+line
+            #print sys.getsizeof(line)
 
             temp_f.write(line + ' &\n')
 
