@@ -1,15 +1,17 @@
 # Alex N's notes for running through the code
 
-## Pre-Preprocessing
-Files will come in raw as .CZI files or Nanozoomer files (.NDPI). NDPI files are from CSHL and can only be converted into JP2000 directly which is why that is how the raw, lossless data is stored. Yuncong converts these into TIFF files so they are useable but it requires conversion of 16bit to 8bit and Hannah said nobody understands how that works nor has Yuncong told anyone.
-
-These files need to be converted to .TIFF files and have all of the surrounding, non-brain, area cut out of the image so that it does not slow down the rest of the code or interfere with anything.
+## File Formats
+* The files from CSHL are created as NDPI,sent to us as jp2000, later converted to tiff. 
+* The files from UCSD are created as CZI, must be converted to tiff via online converter detailed in preprocessing.md.
+* Files are stored on S3 and birdstore as uncompressed jp2000. 
 
 ## Preprocessing
 ### Neurotrace (CSHL)
 Requires files from pre-preprocessing step including [name]_anchor.txt, [name]_sorted_filenames.txt, and a collection of other text, json files, and pkl files (< I will elaborate on this soon).
 
 Neutrace data typically is stained with another indicator, data has multiple channels that are a part of the preprocessing stage.
+
+What lies below is notes meant for reference by Alex Newberry, it will be altered to be for users soon. The scripts that they will need to run are still being written.
 
 Run **preprocess_cshl_data_v2_neurotrace.ipynb**, it will complete every step of the preprocessing stage for neurotrace brains as outlined below:
 #### preprocess_cshl_data_v2_neurotrace.ipynb
