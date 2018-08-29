@@ -13,6 +13,16 @@ Notebooks that have been altered:
 
 <br><br>
 
+#### File naming convensions
+
+MD662&661-F1-2017.06.02-17.07.55_MD662_1_0001
+<STACK_NAME>-<AA>-<DATECUT>-<DATESCANNED>-<STACK_NAME_2>_<N1>-<N2>
+  
+* STACK_NAME:  
+* AA:
+
+
+
 #### Buckets and Directories
 
  - `RAW`: All *\_raw.j2 are stored in Bucket mousebrainatlas-rawdata (as well *_lossy* files that are typically unused).
@@ -25,16 +35,20 @@ Naming conventions are the each file has a unique filename, FILENAME. Every diff
 
 Examples:
 [FILENAME STEM] = `MD662&661-F1-2017.06.02-17.07.55_MD662_1_0001`
-- `RAW` = `MD662&661-F1-2017.06.02-17.07.55_MD662_1_0001_lossless.jp2`
-- `DATA1` = `MD662&661-F1-2017.06.02-17.07.55_MD662_1_0001_raw_Ntb.tif`
-- `DATA2` = `MD662&661-F1-2017.06.02-17.07.55_MD662_1_0001_thumbnail_Ntb.tif`
+- raw_input = `MD662&661-F1-2017.06.02-17.07.55_MD662_1_0001_lossless.jp2`
+- output_1 = `MD662&661-F1-2017.06.02-17.07.55_MD662_1_0001_raw_Ntb.tif`
+- output_2 = `MD662&661-F1-2017.06.02-17.07.55_MD662_1_0001_thumbnail_Ntb.tif`
+
+STACKNAME = the unique identifier for every stack. Example: MD662
+
+folder naming conventions: STACKNAME_SUFFIX/
 
 Preprocessing Steps:
-1) raw (.jp2) -> raw_Ntb (.tif): extract_channel
+1) raw (.jp2) -> raw_Ntb (.tif): extract_a single channel
 2) raw_Ntb -> thumbnail_Ntb: rescale
 3) thumbnail_Ntb -> thumbnail_NtbNormalized: normalize_intensity
 4) Compute transforms using thumbnail_NtbNormalized: align + compose
-5) Supply prep1_thumbnail_mask
+5) Supply prep1_thumbnail_mask :
 6) prep1_thumbnail_mask -> thumbnail_mask: warp
 7) raw_Ntb -> raw_NtbNormalizedAdaptiveInvertedGamma: brightness_correction
 8) Compute prep5 (alignedWithMargin) cropping box based on prep1_thumbnail_mask
