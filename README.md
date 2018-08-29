@@ -1,3 +1,20 @@
+## TEMPORARY 
+
+The entire CodingDonky repo is going to be removed soon. It serves only as a testing ground for Alex Newberry.
+Everything will be cleaned up and ported over to the ActiveBrainAtlas repo. Some files I will need to be extra
+careful with as I have altered them significantly.
+
+Files that have been altered:
+  - preprocess_cshl_data_v2_neurotrace.ipynb
+  - preprocess_ucsd_data_v2.ipynb
+  - brightness_correction.ipynb
+  - distributed_utilities.py
+  - utilities2015.py
+
+<br><br>
+
+
+
 * Doc: documentation
 * src: code
 
