@@ -4,7 +4,7 @@ The entire CodingDonky repo is going to be removed soon. It serves only as a tes
 Everything will be cleaned up and ported over to the ActiveBrainAtlas repo. Some files I will need to be extra
 careful with as I have altered them significantly.
 
-Files that have been altered:
+Notebooks that have been altered:
   - preprocess_cshl_data_v2_neurotrace.ipynb
   - preprocess_ucsd_data_v2.ipynb
   - brightness_correction.ipynb
@@ -13,15 +13,21 @@ Files that have been altered:
 
 <br><br>
 
+#### Buckets and Directories
+
+ - `RAW`: All *\_raw.j2 are stored in Bucket mousebrainatlas-rawdata (as well *_lossy* files that are typically unused).
+ - `DATA`: Bucket mousebrainatlas-data contains ALL other files.
+ 
+
 Naming conventions are the each file has a unique filename, FILENAME. Every different transform of the file will have the naming convention FILE_SUFFIX where SUFFIX is an abbreviated description of the file's state.
 
-Files will always be in *.tif form unless otherwise stated. One important exception is that the raw files given to us are typically in the format *_raw.jp2.
+`DATA` files will always be in *.tif form unless otherwise stated. One important exception is that the `RAW` files given to us are typically in the format *\_lossless.jp2.
 
 Examples:
-- [FILENAME] = MD662&661-F1-2017.06.02-17.07.55_MD662_1_0001.jp2
-- FILE_STEP1 = MD662&661-F1-2017.06.02-17.07.55_MD662_1_0001_raw.tif
-- FILE_STEP2 = MD662&661-F1-2017.06.02-17.07.55_MD662_1_0001_raw_Ntb.tif
-- FILE_STEP3 = MD662&661-F1-2017.06.02-17.07.55_MD662_1_0001_thumbnail_Ntb.tif
+[FILENAME STEM] = `MD662&661-F1-2017.06.02-17.07.55_MD662_1_0001`
+- `RAW` = `MD662&661-F1-2017.06.02-17.07.55_MD662_1_0001_lossless.jp2`
+- `DATA1` = `MD662&661-F1-2017.06.02-17.07.55_MD662_1_0001_raw_Ntb.tif`
+- `DATA2` = `MD662&661-F1-2017.06.02-17.07.55_MD662_1_0001_thumbnail_Ntb.tif`
 
 Preprocessing Steps:
 1) raw (.jp2) -> raw_Ntb (.tif): extract_channel
