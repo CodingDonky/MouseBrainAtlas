@@ -15,11 +15,13 @@ Files that have been altered:
 
 Naming conventions are the each file has a unique filename, FILENAME. Every different transform of the file will have the naming convention FILE_SUFFIX where SUFFIX is an abbreviated description of the file's state.
 
+Files will always be in *.tif form unless otherwise stated. One important exception is that the raw files given to us are typically in the format *_raw.jp2.
+
 Examples:
-FILE = MD662&661-F1-2017.06.02-17.07.55_MD662_1_0001.tif
-FILE_STEP1 = MD662&661-F1-2017.06.02-17.07.55_MD662_1_0001_raw.tif
-FILE_STEP2 = MD662&661-F1-2017.06.02-17.07.55_MD662_1_0001_raw_Ntb.tif
-FILE_STEP3 = MD662&661-F1-2017.06.02-17.07.55_MD662_1_0001_thumbnail_Ntb.tif
+- [FILENAME] = MD662&661-F1-2017.06.02-17.07.55_MD662_1_0001.jp2
+- FILE_STEP1 = MD662&661-F1-2017.06.02-17.07.55_MD662_1_0001_raw.tif
+- FILE_STEP2 = MD662&661-F1-2017.06.02-17.07.55_MD662_1_0001_raw_Ntb.tif
+- FILE_STEP3 = MD662&661-F1-2017.06.02-17.07.55_MD662_1_0001_thumbnail_Ntb.tif
 
 Preprocessing Steps:
 1) raw (.jp2) -> raw_Ntb (.tif): extract_channel
