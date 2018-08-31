@@ -1442,7 +1442,9 @@ class DataManager(object):
         Ts = {}
 
         for fn, T in Ts_anchor_to_individual_section_image_resol.iteritems():
-
+            #print fn
+            #print T
+            
             if use_inverse:
                 T = np.linalg.inv(T)
 

@@ -314,9 +314,9 @@ def run_distributed5(command, argument_type='single', kwargs_list=None, jobs_per
         temp_f = open(temp_script, 'w')
 
         for j, (fj, lj) in enumerate(first_last_tuples_distribute_over(fi, li, jobs_per_node)):
-            print 'fj: ',fj # First index 2
-            print 'lj: ',lj # Last index 2
-            print 'index j: ',j # J index
+            #print 'fj: ',fj # First index 2
+            #print 'lj: ',lj # Last index 2
+            #print 'index j: ',j # J index
         
             # json.dumps(obj) converts an object into a string
             
@@ -333,7 +333,7 @@ def run_distributed5(command, argument_type='single', kwargs_list=None, jobs_per
                 'command_template': shell_escape(command),
                 'kwargs_list_str': shell_escape(json.dumps(kwargs_list_as_list[fj:lj+1]))
                 }
-            print 'line: '+line
+            #print 'line: '+line
             #print sys.getsizeof(line)
 
             temp_f.write(line + ' &\n')
@@ -360,8 +360,11 @@ def run_distributed5(command, argument_type='single', kwargs_list=None, jobs_per
         if local_only:
             stdout_f = open(stdout_template % node_i, "w")
             stderr_f = open(stderr_template % node_i, "w")
+            #print 'before calling script'
+            #print line
             call(temp_script, shell=True, stdout=stdout_f, stderr=stderr_f)
-            print 'running script: '+temp_script
+            #print 'after calling script'
+            #print 'running script: '+temp_script
         else:
             call('qsub -V -q all.q@%(node)s -o %(stdout_log)s -e %(stderr_log)s %(script)s' % \
              dict(node=node_list[node_i], script=temp_script,
